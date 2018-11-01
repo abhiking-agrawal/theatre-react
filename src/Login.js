@@ -1,13 +1,77 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import Axios from 'axios';
 
 class Login extends Component {
+    state = {
+        Username: '',
+        Password: ''
+    }
 
-    render() {
+    login = (e) => {
+        const _this = this;
+        e.preventDefault();
         
-        return (
-            <div>
+        Axios.post('https://northwesttheatre.cf/Theatre/admin/authenticate',_this.state)
+            .then( (response) => {
+                   //  console.log(response.status.message)
+                   _this.setState({ toHome : true });
+                   _this.props.history.push("/")
+                
+            })
+            .catch( (error) => {
+                console.log(error);
+            });
+
             
+          
+    }
+    handleUserInput = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState({ [name] : value });
+        
+      }
+      
+    render() {
+        // if (this.state.toHome === true) {
+        //     return <Redirect to='/' />
+        // }
+        return (
+            <div className="container">
+                <div className="row">
+                    <div className="col-sm-8 col-md-6 col-lg-5 mx-auto">
+                        <div className="card card-signin my-5">
+                            <div className="card-body">
+                                <h5 className="card-title text-center">Sign In {this.state.email}</h5>
+                                <form className="form-signin" onSubmit={this.login}>
+                                    <div className="form-label-group">
+                                        <input type="text" id="inputEmail" className="form-control" placeholder="Email address" required
+                                            autoFocus 
+                                            name="Username"
+                                            onChange={this.handleUserInput}
+                                            />
+                                        <label htmlFor="inputEmail">Email address</label>
+                                    </div>
+
+                                    <div className="form-label-group">
+                                        <input type="password" id="inputPassword" className="form-control" 
+                                            name="Password"
+                                            onChange={this.handleUserInput}
+                                            placeholder="Password" required />
+                                        <label htmlFor="inputPassword" >Password</label>
+                                    </div>
+
+                                    <div className="custom-control custom-checkbox mb-3">
+                                        <input type="checkbox" className="custom-control-input" id="customCheck1" />
+                                        <label className="custom-control-label" htmlFor="customCheck1">Remember password</label>
+                                    </div>
+                                    <button className="btn btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         );
